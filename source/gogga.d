@@ -53,7 +53,7 @@ void gprint(messageT)(messageT message, DebugType debugType = DebugType.INFO)
     write(message);
 
     /* Unlock output */
-    writeMutex.lock();
+    writeMutex.unlock();
 }
 
 void gprintln(messageT)(messageT message, DebugType debugType = DebugType.INFO)
