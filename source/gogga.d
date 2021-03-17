@@ -2,7 +2,6 @@ module gogga;
 
 import std.conv : to;
 import std.stdio : write, stdout;
-import core.sync.mutex : Mutex;
 
 public enum DebugType
 {
@@ -11,49 +10,43 @@ public enum DebugType
     ERROR
 }
 
-private __gshared Mutex writeMutex;
-
-/* Initialize the module (only once, regardless of threads) */
-shared static this()
+byte[] generateMessage(string message, DebugType debugType)
 {
-    /* Initialize the mutex */
-    writeMutex = new Mutex();
-}
-
-void gprint(messageT)(messageT message, DebugType debugType = DebugType.INFO)
-{
-    /* TODO: Remove mutex, oneshot write */
-
-    /* Lock output */
-    writeMutex.lock();
+    /* The generated message */
+    byte[] messageBytes;
 
     /* If INFO, set green */
     if(debugType == DebugType.INFO)
     {
-        stdout.rawWrite(cast(byte[])[27, '[','3','2','m']);
+        messageBytes = cast(byte[])[27, '[','3','2','m'];
     }
     /* If WARNING, set warning */
     else if(debugType == DebugType.WARNING)
     {
-        stdout.rawWrite(cast(byte[])[27, '[','3','5','m']); /* TODO: FInd yllow */
+        messageBytes = cast(byte[])[27, '[','3','5','m']; /* TODO: FInd yllow */
     }
     /* If ERROR, set error */
     else if(debugType == DebugType.ERROR)
     {
-        stdout.rawWrite(cast(byte[])[27, '[','3','1','m']);
+        messageBytes = cast(byte[])[27, '[','3','1','m'];
     }
 
     /* Write the message type */
-    write("["~to!(string)(debugType)~"] ");
+    messageBytes ~= "["~to!(string)(debugType)~"] ";
 
     /* Switch back color */
-    stdout.rawWrite(cast(byte[])[27, '[', '3', '9', 'm']);
+    messageBytes ~= cast(byte[])[27, '[', '3', '9', 'm'];
+
+    return messageBytes;
+}
+
+void gprint(messageT)(messageT message, DebugType debugType = DebugType.INFO)
+{
+    /* Generate the message */
+    byte[] messageBytes = generateMessage(message, debugType);
 
     /* Print the message */
-    write(message);
-
-    /* Unlock output */
-    writeMutex.unlock();
+    write(messageBytes);
 }
 
 void gprintln(messageT)(messageT message, DebugType debugType = DebugType.INFO)
