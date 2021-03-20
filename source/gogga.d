@@ -37,6 +37,9 @@ byte[] generateMessage(string message, DebugType debugType)
     /* Switch back color */
     messageBytes ~= cast(byte[])[27, '[', '3', '9', 'm'];
 
+    /* Append message */
+    messageBytes ~= message;
+
     return messageBytes;
 }
 
