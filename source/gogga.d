@@ -46,7 +46,7 @@ void gprint(messageT)(messageT message, DebugType debugType = DebugType.INFO)
     byte[] messageBytes = generateMessage(message, debugType);
 
     /* Print the message */
-    write(messageBytes);
+    write(cast(string)messageBytes);
 }
 
 void gprintln(messageT)(messageT message, DebugType debugType = DebugType.INFO)
