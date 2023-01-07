@@ -60,3 +60,12 @@ void gprintln(messageT)(messageT message, DebugType debugType = DebugType.INFO)
     /* Call `gprint` */
     gprint(printStr, debugType);
 }
+
+unittest
+{   
+    alias debugTypes = __traits(allMembers, DebugType);
+    static foreach(debugType; debugTypes)
+    {
+        gprintln("Hello world", mixin("DebugType."~debugType));
+    }
+}
