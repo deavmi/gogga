@@ -24,3 +24,4 @@ docs/
 *.lst
 gogga-test-library
 source/gogga.d
+dub.selections.json
