@@ -80,6 +80,8 @@ public class GoggaLogger : Logger
         }
     }
 
+    // TODO: Alias/meta-programmed based println and dbgLn and yeah
+
     public void print(string message, DebugType debugType, string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
