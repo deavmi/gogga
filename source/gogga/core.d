@@ -23,6 +23,7 @@ unittest
     gLogger.error("This is an error message");
 
     // TODO: Add debug stuff
+	writeln();
 }
 
 unittest
