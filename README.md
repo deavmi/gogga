@@ -4,7 +4,7 @@
 
 <br>
 
-<h3 align="center"><i><b>Simple VT100 colourised thread safe pretty-printing logger</i></b></h3>
+<h3 align="center"><i><b>Simple VT100 colourised pretty-printing logger</i></b></h3>
 
 ---
 
