@@ -7,7 +7,7 @@
 		"dlog": "0.3.6"
 	},
 	"description": "Simple VT100 colourised thread safe pretty printer for debug messages",
-	"license": "LGPL",
+	"license": "LGPL 3.0",
 	"name": "gogga",
 	"targetType": "library"
 }
