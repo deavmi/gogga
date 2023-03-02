@@ -2,12 +2,13 @@ module gogga.transform;
 
 import dlog;
 import gogga.context;
+import std.conv : to;
 
 // TODO: hehe easter egg TRADITIONAL, LIBERAL, UNHINGED
 public enum GoggaMode
 {
-    SIMPLE,
     TwoKTwenty3,
+    SIMPLE,
     RUSTACEAN
 }
 
@@ -39,12 +40,12 @@ public class GoggaTransform : MessageTransform
          */
         if(mode == GoggaMode.SIMPLE)
         {
-            finalOutput = cast(string)debugColor("["~to!(string)(level)~"] "~text);
+            finalOutput = cast(string)debugColor("["~to!(string)(level)~"] "~text, level);
         }
         /** 
          * TwoKTwenty3 is: `[<file>] (<module>:<lineNumber>) <message>`
          */
-        else if(mode == Gogga.TwoKTwenty3)
+        else if(mode == GoggaMode.TwoKTwenty3)
         {
             /* Module information (and status debugColoring) */
             string moduleInfo = cast(string)debugColor("["~context[1]~"]", level);
@@ -63,6 +64,11 @@ public class GoggaTransform : MessageTransform
         }
 
         return finalOutput;
+    }
+
+    public void setMode(GoggaMode mode)
+    {
+        this.mode = mode;
     }
 }
 
@@ -92,6 +98,9 @@ private byte[] debugColor(string text, Level level)
 
     /* Switch back debugColor */
     messageBytes ~= cast(byte[])[27, '[', '3', '9', 'm'];
+
+    /* Reset coloring */
+    messageBytes ~= [27, '[', 'm'];
 
     return messageBytes;
 }

@@ -7,6 +7,11 @@ import std.array : join;
 import gogga.transform;
 import gogga.context;
 
+version(unittest)
+{
+	import std.stdio : writeln;
+}
+
 unittest
 {
     GoggaLogger gLogger = new GoggaLogger();
@@ -18,6 +23,54 @@ unittest
     gLogger.error("This is an error message");
 
     // TODO: Add debug stuff
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+	gLogger.mode(GoggaMode.TwoKTwenty3);
+
+    // TODO: Somehow re-enable this please
+    // gLogger.log("Bruh\n");
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+    // TODO: Add debug stuff
+
+	writeln();
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+	gLogger.mode(GoggaMode.SIMPLE);
+
+    // TODO: Somehow re-enable this please
+    // gLogger.log("Bruh\n");
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+    // TODO: Add debug stuff
+
+	writeln();
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+	gLogger.mode(GoggaMode.RUSTACEAN);
+
+    // TODO: Somehow re-enable this please
+    // gLogger.log("Bruh\n");
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+    // TODO: Add debug stuff
+
+	writeln();
 }
 
 public class GoggaLogger : Logger
@@ -34,6 +87,11 @@ public class GoggaLogger : Logger
         import std.stdio : write;
         write(text);
     }
+
+	public void mode(GoggaMode mode)
+	{
+		gTransform.setMode(mode);
+	}
 
     /** 
 	 * Logs using the default context an arbitrary amount of arguments
