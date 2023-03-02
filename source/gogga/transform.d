@@ -60,7 +60,9 @@ public class GoggaTransform : MessageTransform
          */
         else
         {
-            
+            finalOutput = cast(string)debugColor(to!(string)(level)~"\t", level);
+            finalOutput ~= cast(string)(colorSrc(context[1]~"/"~context[4]~":"~context[2]~"  "));
+            finalOutput ~= text~"\n";
         }
 
         return finalOutput;
