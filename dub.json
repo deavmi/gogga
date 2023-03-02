@@ -1,8 +1,9 @@
 {
+	"homepage": "https://deavmi.assigned.network/projects/",
 	"authors": [
-		"Tristan B. Kildaire"
+		"Tristan B. Velloza Kildaire"
 	],
-	"copyright": "Copyright © 2020, Tristan B. Kildaire",
+	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
 		"dlog": "0.3.6"
 	},
