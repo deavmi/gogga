@@ -10,12 +10,7 @@ import dlog;
 import dlog.utilities : flatten;
 import std.array : join;
 
-public enum DebugType
-{
-    INFO,
-    WARNING,
-    ERROR
-}
+
 
 unittest
 {
@@ -26,24 +21,9 @@ unittest
     gLogger.info("This is an info message");
     gLogger.warn("This is a warning message");
     gLogger.error("This is an error message");
-    // TODO: Re-enable the below and test them
-    // gLogger.enableDebug();
-    // gLogger.dbg("Bruh debug\n", DebugType.INFO);
 
-    // gLogger.disableDebug();
-    // gLogger.dbg("Bruh debug\n", DebugType.ERROR);
+    // TODO: Add debug stuff
 }
-
-// TODO: See if we will enable the below
-// unittest
-// {   
-//     GoggaLogger gLogger = new GoggaLogger();
-//     alias debugTypes = __traits(allMembers, DebugType);
-//     static foreach(debugType; debugTypes)
-//     {
-//         gLogger.print("Hello world\n", mixin("DebugType."~debugType));
-//     }
-// }
 
 public final class GoggaContext : Context
 {
