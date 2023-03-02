@@ -16,6 +16,8 @@
 The API is rather straight-forward, simply create a new logger and then you can use it as such:
 
 ```d
+import gogga;
+
 GoggaLogger gLogger = new GoggaLogger();
 
 gLogger.info("This is an info message");

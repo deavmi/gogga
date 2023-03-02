@@ -1,4 +1,4 @@
-module gogga;
+module gogga.core;
 
 import std.conv : to;
 import std.stdio : write, stdout;
