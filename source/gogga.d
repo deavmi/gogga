@@ -7,6 +7,8 @@ import std.stdio : write, stdout;
 import std.stdio : writeln;
 
 import dlog;
+import dlog.utilities : flatten;
+import std.array : join;
 
 public enum DebugType
 {
@@ -45,17 +47,7 @@ unittest
 
 public final class GoggaContext : Context
 {
-    private DebugType msgType;
-
-    public DebugType getLevel()
-    {
-        return msgType;
-    }
-
-    public void setLevel(DebugType msgType)
-    {
-        this.msgType = msgType;
-    }
+    // TODO: Put more advanced stuff here
 }
 
 public class GoggaLogger : Logger
@@ -73,81 +65,180 @@ public class GoggaLogger : Logger
         write(text);
     }
 
-    // public alias gprint = ginfo;
-    // public alias gprintln = ginfoln;
-
-    // public void ginfo(string message)
-    // {
-    //     log(message);
-    // }
-
-    // public void ginfoln(string message)
-    // {
-    //     ginfo(message~"\n");
-    // }
-
-    // TODO: Find out how to do a partial function using meta-programming in D
-    // public alias error() = print()
-
-    public void dbg(string message, DebugType debugType, string c1 = __FILE_FULL_PATH__,
+    /** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to ERROR
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public final void error(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
-    {
-        if(debugEnabled)
-        {
-            print(message, debugType, c1, c2, c3, c4, c5, c6);
-        }
-    }
+	{
+		/* Use the context `GoggaContext` */
+		GoggaContext defaultContext = new GoggaContext();
 
-    public void info(T...)(T message, string c1 = __FILE_FULL_PATH__,
+		/* Build up the line information */
+		CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
+
+		/* Set the line information in the context */
+		defaultContext.setLineInfo(compilationInfo);
+
+		/* Set the level to ERROR */
+		defaultContext.setLevel(Level.ERROR);
+
+		/**
+		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
+		 */		
+		string[] components = flatten(segments);
+
+		/* Join all `components` into a single string */
+		string messageOut = join(components, multiArgJoiner);
+
+		/* Call the log */
+		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
+	}
+
+	/** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to INFO
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public final void info(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
-    {
-        /* Create a Gogga context with the correct level */
-        GoggaContext context = new GoggaContext();
-        context.setLevel(DebugType.INFO);
+	{
+		/* Use the context `GoggaContext` */
+		GoggaContext defaultContext = new GoggaContext();
 
-        /* Do a custom context log */
-        logc(context, message, c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, c6=c6);
-    }
+		/* Build up the line information */
+		CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
 
-    public void warn(T...)(T message, string c1 = __FILE_FULL_PATH__,
+		/* Set the line information in the context */
+		defaultContext.setLineInfo(compilationInfo);
+
+		/* Set the level to INFO */
+		defaultContext.setLevel(Level.INFO);
+
+		/**
+		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
+		 */		
+		string[] components = flatten(segments);
+
+		/* Join all `components` into a single string */
+		string messageOut = join(components, multiArgJoiner);
+
+		/* Call the log */
+		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
+	}
+
+	/** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to WARN
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public final void warn(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
-    {
-        /* Create a Gogga context with the correct level */
-        GoggaContext context = new GoggaContext();
-        context.setLevel(DebugType.WARNING);
+	{
+		/* Use the context `GoggaContext` */
+		GoggaContext defaultContext = new GoggaContext();
 
-        /* Do a custom context log */
-        logc(context, message, c1, c2, c3, c4, c5, c6);
-    }
+		/* Build up the line information */
+		CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
 
-    public void error(T...)(string c1 = __FILE_FULL_PATH__,
-									string c2 = __FILE__, ulong c3 = __LINE__,
-									string c4 = __MODULE__, string c5 = __FUNCTION__,
-									string c6 = __PRETTY_FUNCTION__, T message)
-    {
-        /* Create a Gogga context with the correct level */
-        GoggaContext context = new GoggaContext();
-        context.setLevel(DebugType.ERROR);
+		/* Set the line information in the context */
+		defaultContext.setLineInfo(compilationInfo);
 
-        /* Do a custom context log */
-        logc(context, message, c1, c2, c3, c4, c5, c6);
-    }
+		/* Set the level to WARN */
+		defaultContext.setLevel(Level.WARN);
 
-    // TODO: Alias/meta-programmed based println and dbgLn and yeah
-    public void print(string message, DebugType debugType, string c1 = __FILE_FULL_PATH__,
+		/**
+		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
+		 */		
+		string[] components = flatten(segments);
+
+		/* Join all `components` into a single string */
+		string messageOut = join(components, multiArgJoiner);
+
+		/* Call the log */
+		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
+	}
+
+	/** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to DEBUG
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public final void debug_(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
-    {
-        string[] contextExtras = [to!(string)(debugType)];
-        log(message, c1, c2, c3, c4, c5, c6, contextExtras);
-    }
+	{
+		/* Use the context `GoggaContext` */
+		GoggaContext defaultContext = new GoggaContext();
+
+		/* Build up the line information */
+		CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
+
+		/* Set the line information in the context */
+		defaultContext.setLineInfo(compilationInfo);
+
+		/* Set the level to DEBUG */
+		defaultContext.setLevel(Level.DEBUG);
+
+		/**
+		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
+		 */		
+		string[] components = flatten(segments);
+
+		/* Join all `components` into a single string */
+		string messageOut = join(components, multiArgJoiner);
+
+		/* Call the log */
+		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
+	}
+
+	/* You can also call using `dbg` */
+	public alias dbg = debug_;
 
     private bool debugEnabled = false;
 
@@ -187,23 +278,23 @@ public class GoggaTransform : MessageTransform
     }
 }
 
-private byte[] debugColor(string text, DebugType debugType)
+private byte[] debugColor(string text, Level level)
 {
     /* The generated message */
     byte[] messageBytes;
 
     /* If INFO, set green */
-    if(debugType == DebugType.INFO)
+    if(level == Level.INFO)
     {
         messageBytes = cast(byte[])[27, '[','3','2','m'];
     }
     /* If WARNING, set warning */
-    else if(debugType == DebugType.WARNING)
+    else if(level == Level.WARN)
     {
         messageBytes = cast(byte[])[27, '[','3','5','m']; /* TODO: FInd yllow */
     }
     /* If ERROR, set error */
-    else if(debugType == DebugType.ERROR)
+    else if(level == Level.ERROR)
     {
         messageBytes = cast(byte[])[27, '[','3','1','m'];
     }
