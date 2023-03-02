@@ -32,15 +32,15 @@ public class GoggaTransform : MessageTransform
         /* Extract the Level */
         Level level = gCtx.getLevel();
 
-    
-        // TODO: go for [<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>
 
         /** 
          * Simple mode is just: `[<LEVEL>] <message>`
          */
         if(mode == GoggaMode.SIMPLE)
         {
-            finalOutput = cast(string)debugColor("["~to!(string)(level)~"] "~text, level);
+            finalOutput = cast(string)debugColor("["~to!(string)(level)~"] ", level);
+
+            finalOutput ~= text~"\n";
         }
         /** 
          * TwoKTwenty3 is: `[<file>] (<module>:<lineNumber>) <message>`
@@ -56,11 +56,11 @@ public class GoggaTransform : MessageTransform
             finalOutput =  moduleInfo~" "~funcInfo~" "~text~"\n";
         }
         /** 
-         * Rustacean mode
+         * Rustacean mode is: `[<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>`
          */
         else
         {
-
+            
         }
 
         return finalOutput;
