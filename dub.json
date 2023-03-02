@@ -4,7 +4,7 @@
 	],
 	"copyright": "Copyright © 2020, Tristan B. Kildaire",
 	"dependencies": {
-		"dlog": "0.1.6"
+		"dlog": "0.2.1"
 	},
 	"description": "Simple VT100 colourised thread safe pretty printer for debug messages",
 	"license": "LGPL",

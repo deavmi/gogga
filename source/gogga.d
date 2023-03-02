@@ -19,22 +19,42 @@ unittest
 {
     GoggaLogger gLogger = new GoggaLogger();
 
+    // TODO: Somehow re-enable this please
     // gLogger.log("Bruh\n");
-    gLogger.print("Bruh\n", DebugType.INFO);
-    gLogger.enableDebug();
-    gLogger.dbg("Bruh debug\n", DebugType.INFO);
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+    // TODO: Re-enable the below and test them
+    // gLogger.enableDebug();
+    // gLogger.dbg("Bruh debug\n", DebugType.INFO);
 
-    gLogger.disableDebug();
-    gLogger.dbg("Bruh debug\n", DebugType.ERROR);
+    // gLogger.disableDebug();
+    // gLogger.dbg("Bruh debug\n", DebugType.ERROR);
 }
 
-unittest
-{   
-    GoggaLogger gLogger = new GoggaLogger();
-    alias debugTypes = __traits(allMembers, DebugType);
-    static foreach(debugType; debugTypes)
+// TODO: See if we will enable the below
+// unittest
+// {   
+//     GoggaLogger gLogger = new GoggaLogger();
+//     alias debugTypes = __traits(allMembers, DebugType);
+//     static foreach(debugType; debugTypes)
+//     {
+//         gLogger.print("Hello world\n", mixin("DebugType."~debugType));
+//     }
+// }
+
+public final class GoggaContext : Context
+{
+    private DebugType msgType;
+
+    public DebugType getLevel()
     {
-        gLogger.print("Hello world\n", mixin("DebugType."~debugType));
+        return msgType;
+    }
+
+    public void setLevel(DebugType msgType)
+    {
+        this.msgType = msgType;
     }
 }
 
@@ -80,8 +100,46 @@ public class GoggaLogger : Logger
         }
     }
 
-    // TODO: Alias/meta-programmed based println and dbgLn and yeah
+    public void info(T...)(T message, string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__)
+    {
+        /* Create a Gogga context with the correct level */
+        GoggaContext context = new GoggaContext();
+        context.setLevel(DebugType.INFO);
 
+        /* Do a custom context log */
+        logc(context, message, c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, c6=c6);
+    }
+
+    public void warn(T...)(T message, string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__)
+    {
+        /* Create a Gogga context with the correct level */
+        GoggaContext context = new GoggaContext();
+        context.setLevel(DebugType.WARNING);
+
+        /* Do a custom context log */
+        logc(context, message, c1, c2, c3, c4, c5, c6);
+    }
+
+    public void error(T...)(string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__, T message)
+    {
+        /* Create a Gogga context with the correct level */
+        GoggaContext context = new GoggaContext();
+        context.setLevel(DebugType.ERROR);
+
+        /* Do a custom context log */
+        logc(context, message, c1, c2, c3, c4, c5, c6);
+    }
+
+    // TODO: Alias/meta-programmed based println and dbgLn and yeah
     public void print(string message, DebugType debugType, string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
@@ -110,15 +168,22 @@ public class GoggaTransform : MessageTransform
 {
     private bool isSourceMode = false;
 
-    public override string transform(string text, string[] context)
+    public override string transform(string text, Context ctx)
     {
+        /* Get the GoggaContext */
+        GoggaContext gCtx = cast(GoggaContext)ctx;
+
+        /* Extract the line information */
+        CompilationInfo compInfo = gCtx.getLineInfo();
+        string[] context = compInfo.toArray();
+
         /* Module information (and status debugColoring) */
-		string moduleInfo = cast(string)debugColor("["~context[1]~"]", to!(DebugType)(context[6]));
+		string moduleInfo = cast(string)debugColor("["~context[1]~"]", gCtx.getLevel());
 		
         /* Function and line number info */
         string funcInfo = cast(string)(colorSrc("("~context[4]~":"~context[2]~")"));
 
-        return moduleInfo~" "~funcInfo~" "~text;
+        return moduleInfo~" "~funcInfo~" "~text~"\n";
     }
 }
 
