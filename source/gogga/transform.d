@@ -1,10 +1,16 @@
+/** 
+ * The custom text transformer that implements the gogga-stylised
+ * logging messages
+ */
 module gogga.transform;
 
 import dlog;
 import gogga.context;
 import std.conv : to;
 
-// TODO: hehe easter egg TRADITIONAL, LIBERAL, UNHINGED
+/** 
+ * The gogga styles supported
+ */
 public enum GoggaMode
 {
     TwoKTwenty3,
@@ -12,10 +18,24 @@ public enum GoggaMode
     RUSTACEAN
 }
 
+/** 
+ * The custom gogga text transformer
+ */
 public class GoggaTransform : MessageTransform
 {
+    /** 
+     * Current style
+     */
     private GoggaMode mode;
 
+    /** 
+     * Transforms the provided text
+     *
+     * Params:
+     *   text = text to transform
+     *   ctx = the context passed in
+     * Returns: a string of transformed text
+     */
     public override string transform(string text, Context ctx)
     {
         /* The generated output string */
@@ -68,12 +88,27 @@ public class GoggaTransform : MessageTransform
         return finalOutput;
     }
 
+    /** 
+     * Set the gogga style
+     *
+     * Params:
+     *   mode = the GoggaMode to use
+     */
     public void setMode(GoggaMode mode)
     {
         this.mode = mode;
     }
 }
 
+/** 
+ * Colorise the text provided accoridng to the level and then
+ * reset the colors at the end
+ *
+ * Params:
+ *   text = the text to colorise
+ *   level = the color to use
+ * Returns: the byte sequence of characters and controls
+ */
 private byte[] debugColor(string text, Level level)
 {
     /* The generated message */
@@ -107,6 +142,14 @@ private byte[] debugColor(string text, Level level)
     return messageBytes;
 }
 
+/** 
+ * Colors the provided text in a gray fashion and then
+ * resets back to normal
+ *
+ * Params:
+ *   text = the text to gray color
+ * Returns: the byte sequence of characters and controls
+ */
 private byte[] colorSrc(string text)
 {
     /* The generated message */
