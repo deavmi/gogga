@@ -189,7 +189,8 @@ public class GoggaLogger : Logger
 
 	/** 
 	 * Logs using the default context an arbitrary amount of arguments
-	 * specifically setting the context's level to DEBUG
+	 * specifically setting the context's level to DEBUG and will
+	 * only print if debugging is enabled
 	 *
 	 * Params:
 	 *   segments = the arbitrary argumnets (alias sequence)
@@ -234,7 +235,9 @@ public class GoggaLogger : Logger
 		}
 	}
 
-	/* You can also call using `dbg` */
+	/** 
+	 * Alias for debug_
+	 */
 	public alias dbg = debug_;
 
 	/** 

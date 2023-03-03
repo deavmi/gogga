@@ -13,8 +13,19 @@ import std.conv : to;
  */
 public enum GoggaMode
 {
+    /** 
+     * TwoKTwenty3 is: `[<file>] (<module>:<lineNumber>) <message>`
+     */
     TwoKTwenty3,
+
+    /** 
+     * Simple mode is just: `[<LEVEL>] <message>`
+     */
     SIMPLE,
+
+    /** 
+     * Rustacean mode is: `[<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>`
+     */
     RUSTACEAN
 }
 

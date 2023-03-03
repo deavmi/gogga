@@ -29,7 +29,9 @@ This should output something like the following:
 
 ![](example.png)
 
+Various [styles](https://gogga.dpldocs.info/v2.1.14/gogga.transform.GoggaMode.html) are supported which can be set using `mode(GoggaMode)`.
+
 ---
 
-Or you can also [View the full API](https://gogga.dpldocs.info/v2.1.13/index.html).
+Or you can also [View the full API](https://gogga.dpldocs.info/v2.1.14/index.html).
 
