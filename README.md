@@ -29,3 +29,7 @@ This should output something like the following:
 
 ![](example.png)
 
+---
+
+Or you can also [View the full API](https://gogga.dpldocs.info/v2.1.12/index.html).
+
