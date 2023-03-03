@@ -7,94 +7,6 @@ import std.array : join;
 import gogga.transform;
 import gogga.context;
 
-version(unittest)
-{
-	import std.stdio : writeln;
-}
-
-unittest
-{
-    GoggaLogger gLogger = new GoggaLogger();
-
-	// Test the normal modes
-    gLogger.info("This is an info message");
-    gLogger.warn("This is a warning message");
-    gLogger.error("This is an error message");
-
-	// We shouldn't see anything as debug is off
-	gLogger.dbg("This is a debug which is hidden", 1);
-
-	// Now enable debugging and you should see it
-	gLogger.enableDebug();
-	gLogger.dbg("This is a VISIBLE debug", true);
-
-    // Make space between unit tests
-	writeln();
-}
-
-unittest
-{
-    GoggaLogger gLogger = new GoggaLogger();
-	gLogger.mode(GoggaMode.TwoKTwenty3);
-
-    // Test the normal modes
-    gLogger.info("This is an info message");
-    gLogger.warn("This is a warning message");
-    gLogger.error("This is an error message");
-
-	// We shouldn't see anything as debug is off
-	gLogger.dbg("This is a debug which is hidden", 1);
-
-	// Now enable debugging and you should see it
-	gLogger.enableDebug();
-	gLogger.dbg("This is a VISIBLE debug", true);
-
-    // Make space between unit tests
-	writeln();
-}
-
-unittest
-{
-    GoggaLogger gLogger = new GoggaLogger();
-	gLogger.mode(GoggaMode.SIMPLE);
-
-    // Test the normal modes
-    gLogger.info("This is an info message");
-    gLogger.warn("This is a warning message");
-    gLogger.error("This is an error message");
-
-	// We shouldn't see anything as debug is off
-	gLogger.dbg("This is a debug which is hidden", 1);
-
-	// Now enable debugging and you should see it
-	gLogger.enableDebug();
-	gLogger.dbg("This is a VISIBLE debug", true);
-
-    // Make space between unit tests
-	writeln();
-}
-
-unittest
-{
-    GoggaLogger gLogger = new GoggaLogger();
-	gLogger.mode(GoggaMode.RUSTACEAN);
-
-    // Test the normal modes
-    gLogger.info("This is an info message");
-    gLogger.warn("This is a warning message");
-    gLogger.error("This is an error message");
-
-	// We shouldn't see anything as debug is off
-	gLogger.dbg("This is a debug which is hidden", 1);
-
-	// Now enable debugging and you should see it
-	gLogger.enableDebug();
-	gLogger.dbg("This is a VISIBLE debug", true);
-
-    // Make space between unit tests
-	writeln();
-}
-
 public class GoggaLogger : Logger
 {
 	// The Gogga transformer
@@ -309,4 +221,92 @@ public class GoggaLogger : Logger
     {
         this.debugEnabled = false;
     }
+}
+
+version(unittest)
+{
+	import std.stdio : writeln;
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+
+	// Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
+
+	// Now enable debugging and you should see it
+	gLogger.enableDebug();
+	gLogger.dbg("This is a VISIBLE debug", true);
+
+    // Make space between unit tests
+	writeln();
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+	gLogger.mode(GoggaMode.TwoKTwenty3);
+
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
+
+	// Now enable debugging and you should see it
+	gLogger.enableDebug();
+	gLogger.dbg("This is a VISIBLE debug", true);
+
+    // Make space between unit tests
+	writeln();
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+	gLogger.mode(GoggaMode.SIMPLE);
+
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
+
+	// Now enable debugging and you should see it
+	gLogger.enableDebug();
+	gLogger.dbg("This is a VISIBLE debug", true);
+
+    // Make space between unit tests
+	writeln();
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+	gLogger.mode(GoggaMode.RUSTACEAN);
+
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
+
+	// Now enable debugging and you should see it
+	gLogger.enableDebug();
+	gLogger.dbg("This is a VISIBLE debug", true);
+
+    // Make space between unit tests
+	writeln();
 }
