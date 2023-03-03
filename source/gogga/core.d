@@ -7,25 +7,49 @@ import std.array : join;
 import gogga.transform;
 import gogga.context;
 
+/** 
+ * The logging class which provides the logging print
+ * calls, controlling of style and whether to debug or
+ * not
+ */
 public class GoggaLogger : Logger
 {
-	// The Gogga transformer
+	/** 
+	 * The custom transformer
+	 */
     private GoggaTransform gTransform = new GoggaTransform();
 
-	// Whether debug is enabled
+	/** 
+	 * Whether debug prints are enabled or not
+	 */
     private bool debugEnabled = false;
 
+	/** 
+	 * Constructs a new GoggaLOgger
+	 */
     this()
     {
         super(gTransform);
     }
     
+	/** 
+	 * Our underlying logging implementation
+	 *
+	 * Params:
+	 *   text = the text to write
+	 */
     public override void logImpl(string text)
     {
         import std.stdio : write;
         write(text);
     }
 
+	/** 
+	 * Set the style of print outs
+	 *
+	 * Params:
+	 *   mode = the GoggaMode wanted
+	 */
 	public void mode(GoggaMode mode)
 	{
 		gTransform.setMode(mode);
@@ -210,13 +234,17 @@ public class GoggaLogger : Logger
 	/* You can also call using `dbg` */
 	public alias dbg = debug_;
 
-    // Any calls to debugPrint will actually occur
+	/** 
+	 * Enables debug prints
+	 */
     public void enableDebug()
     {
         this.debugEnabled = true;
-    }
+	}
 
-    // Any calls to debugPrint will not occur
+	/** 
+	 * Disables debug prints
+	 */
     public void disableDebug()
     {
         this.debugEnabled = false;

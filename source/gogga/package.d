@@ -1,3 +1,6 @@
+/**
+ * Gogga logging facilities
+ */
 module gogga;
 
 public import gogga.core : GoggaLogger;
