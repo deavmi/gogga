@@ -1,3 +1,6 @@
+/** 
+ * Logging facilities
+ */
 module gogga.core;
 
 import dlog;

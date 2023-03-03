@@ -31,5 +31,5 @@ This should output something like the following:
 
 ---
 
-Or you can also [View the full API](https://gogga.dpldocs.info/v2.1.12/index.html).
+Or you can also [View the full API](https://gogga.dpldocs.info/v2.1.13/index.html).
 
