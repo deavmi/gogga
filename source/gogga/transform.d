@@ -130,15 +130,20 @@ private byte[] debugColor(string text, Level level)
     {
         messageBytes = cast(byte[])[27, '[','3','2','m'];
     }
-    /* If WARNING, set warning */
+    /* If WARN, set warning */
     else if(level == Level.WARN)
     {
-        messageBytes = cast(byte[])[27, '[','3','5','m']; /* TODO: FInd yllow */
+        messageBytes = cast(byte[])[27, '[','3','1', ';', '9', '3', 'm'];
     }
     /* If ERROR, set error */
     else if(level == Level.ERROR)
     {
         messageBytes = cast(byte[])[27, '[','3','1','m'];
+    }
+    /* If DEBUG, set debug */
+    else
+    {
+        messageBytes = cast(byte[])[27, '[','3','5','m'];
     }
 
     /* Add the message */
