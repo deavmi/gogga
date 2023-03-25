@@ -11,6 +11,8 @@
 <br>
 <br
 
+[![D](https://github.com/deavmi/gogga/actions/workflows/d.yml/badge.svg)](https://github.com/deavmi/gogga/actions/workflows/d.yml)
+    
 ## Usage
 
 The API is rather straight-forward, simply create a new logger and then you can use it as such:
