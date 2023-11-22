@@ -26,7 +26,12 @@ public enum GoggaMode
     /** 
      * Rustacean mode is: `[<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>`
      */
-    RUSTACEAN
+    RUSTACEAN,
+
+    /** 
+     * Simple rustacean mode is: `[<LEVEL>] (<functionName>:<lineNumber>) <message>`
+     */
+    RUSTACEAN_SIMPLE
 }
 
 /** 
@@ -89,10 +94,19 @@ public class GoggaTransform : MessageTransform
         /** 
          * Rustacean mode is: `[<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>`
          */
-        else
+        else if(mode == GoggaMode.RUSTACEAN)
         {
             finalOutput = cast(string)debugColor(to!(string)(level)~"\t", level);
             finalOutput ~= cast(string)(colorSrc(context[1]~"/"~context[4]~":"~context[2]~"  "));
+            finalOutput ~= text~"\n";
+        }
+        /** 
+         * Simple rustacean mode is: `[<LEVEL>] (<functionName>:<lineNumber>) <message>`
+         */
+        else if(mode == GoggaMode.RUSTACEAN_SIMPLE)
+        {
+            finalOutput = cast(string)debugColor(to!(string)(level)~"\t", level);
+            finalOutput ~= cast(string)(colorSrc(context[4]~":"~context[2]~"  "));
             finalOutput ~= text~"\n";
         }
 
