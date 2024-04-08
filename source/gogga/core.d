@@ -71,7 +71,7 @@ public class GoggaLogger : Logger
 	 *   __FUNCTION__ = compile time usage function
 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
 	 */
-	public final void error(TextType...)(TextType segments,
+	public void error(TextType...)(TextType segments,
 									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
@@ -114,7 +114,7 @@ public class GoggaLogger : Logger
 	 *   __FUNCTION__ = compile time usage function
 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
 	 */
-	public final void info(TextType...)(TextType segments,
+	public void info(TextType...)(TextType segments,
 									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
@@ -157,7 +157,7 @@ public class GoggaLogger : Logger
 	 *   __FUNCTION__ = compile time usage function
 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
 	 */
-	public final void warn(TextType...)(TextType segments,
+	public void warn(TextType...)(TextType segments,
 									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
@@ -201,7 +201,7 @@ public class GoggaLogger : Logger
 	 *   __FUNCTION__ = compile time usage function
 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
 	 */
-	public final void debug_(TextType...)(TextType segments,
+	public void debug_(TextType...)(TextType segments,
 									string c1 = __FILE_FULL_PATH__,
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
