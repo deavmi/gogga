@@ -273,10 +273,6 @@ public final class GoggaLogger : BasicLogger
         /* Set the level */
         message.setLevel(level);
 
-        // TODO: Add a feature (compile time check)
-        // that if segments is first string then everything else
-        // iets anders, then apply formatting
-
         /** 
          * Grab all compile-time arguments and make them
          * into an array, then join them together and
