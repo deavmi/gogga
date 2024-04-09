@@ -1,7 +1,7 @@
 module gogga.core;
 
-import dlog.nu.core;
-import dlog.nu.basic;
+import dlog.core;
+import dlog.basic;
 
 import std.conv : to;
 
@@ -329,7 +329,7 @@ public final class GoggaLogger : BasicLogger
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
 	{
-        doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.WARNING);
+        doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.WARN);
 	}
 
 	/** 
@@ -381,7 +381,7 @@ private byte[] debugColor(string text, Level level)
         messageBytes = cast(byte[])[27, '[','3','2','m'];
     }
     /* If WARN, set yellow */
-    else if(level == Level.WARNING)
+    else if(level == Level.WARN)
     {
         messageBytes = cast(byte[])[27, '[','3','1', ';', '9', '3', 'm'];
     }
