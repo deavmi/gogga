@@ -333,34 +333,14 @@ public class GoggaLogger2 : BasicLogger
 									string c2 = __FILE__, ulong c3 = __LINE__,
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
-	{
-		/* Only debug if debugging is enabled */
-		if(debugEnabled)
-		{
-			doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.DEBUG);
-		}
+	{		
+        doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.DEBUG);
 	}
 
     /** 
 	 * Alias for debug_
 	 */
 	public alias dbg = debug_;
-
-	/** 
-	 * Enables debug prints
-	 */
-    public void enableDebug()
-    {
-        this.debugEnabled = true;
-	}
-
-	/** 
-	 * Disables debug prints
-	 */
-    public void disableDebug()
-    {
-        this.debugEnabled = false;
-    }
 }
 
 /** 
@@ -438,11 +418,6 @@ private byte[] colorSrc(string text)
     return messageBytes;
 }
 
-unittest
-{
-    GoggaLogger2 logger = new GoggaLogger2();
-}
-
 version(unittest)
 {
 	import std.stdio : writeln, stdout;
@@ -452,7 +427,7 @@ unittest
 {
     GoggaLogger2 gLogger = new GoggaLogger2();
     gLogger.addHandler(new FileHandler(stdout));
-    gLogger.setLevel(Level.DEBUG);
+    gLogger.setLevel(Level.INFO);
 
 	// Test the normal modes
     gLogger.info("This is an info message");
@@ -463,7 +438,7 @@ unittest
 	gLogger.dbg("This is a debug which is hidden", 1);
 
 	// Now enable debugging and you should see it
-	gLogger.enableDebug();
+	gLogger.setLevel(Level.DEBUG);
 	gLogger.dbg("This is a VISIBLE debug", true);
 
     // Make space between unit tests
@@ -474,7 +449,7 @@ unittest
 {
     GoggaLogger2 gLogger = new GoggaLogger2();
     gLogger.addHandler(new FileHandler(stdout));
-    gLogger.setLevel(Level.DEBUG);
+    gLogger.setLevel(Level.INFO);
 
 	gLogger.mode(GoggaMode.TwoKTwenty3);
 
@@ -487,7 +462,7 @@ unittest
 	gLogger.dbg("This is a debug which is hidden", 1);
 
 	// Now enable debugging and you should see it
-	gLogger.enableDebug();
+    gLogger.setLevel(Level.DEBUG);
 	gLogger.dbg("This is a VISIBLE debug", true);
 
     // Make space between unit tests
@@ -498,7 +473,7 @@ unittest
 {
     GoggaLogger2 gLogger = new GoggaLogger2();
     gLogger.addHandler(new FileHandler(stdout));
-    gLogger.setLevel(Level.DEBUG);
+    gLogger.setLevel(Level.INFO);
 
 	gLogger.mode(GoggaMode.SIMPLE);
 
@@ -511,7 +486,7 @@ unittest
 	gLogger.dbg("This is a debug which is hidden", 1);
 
 	// Now enable debugging and you should see it
-	gLogger.enableDebug();
+    gLogger.setLevel(Level.DEBUG);
 	gLogger.dbg("This is a VISIBLE debug", true);
 
     // Make space between unit tests
@@ -522,7 +497,7 @@ unittest
 {
     GoggaLogger2 gLogger = new GoggaLogger2();
     gLogger.addHandler(new FileHandler(stdout));
-    gLogger.setLevel(Level.DEBUG);
+    gLogger.setLevel(Level.INFO);
 
 	gLogger.mode(GoggaMode.RUSTACEAN);
 
@@ -535,7 +510,7 @@ unittest
 	gLogger.dbg("This is a debug which is hidden", 1);
 
 	// Now enable debugging and you should see it
-	gLogger.enableDebug();
+    gLogger.setLevel(Level.DEBUG);
 	gLogger.dbg("This is a VISIBLE debug", true);
 
     // Make space between unit tests
@@ -546,7 +521,7 @@ unittest
 {
     GoggaLogger2 gLogger = new GoggaLogger2();
     gLogger.addHandler(new FileHandler(stdout));
-    gLogger.setLevel(Level.DEBUG);
+    gLogger.setLevel(Level.INFO);
 
 	gLogger.mode(GoggaMode.RUSTACEAN_SIMPLE);
 
@@ -559,7 +534,7 @@ unittest
 	gLogger.dbg("This is a debug which is hidden", 1);
 
 	// Now enable debugging and you should see it
-	gLogger.enableDebug();
+    gLogger.setLevel(Level.DEBUG);
 	gLogger.dbg("This is a VISIBLE debug", true);
 
     // Make space between unit tests
