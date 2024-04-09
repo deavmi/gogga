@@ -106,9 +106,14 @@ private class GoggaMessage : BasicMessage
 {
     private GoggaCompInfo ctx;
 
-    this(GoggaCompInfo context)
+    this()
     {
-        this.ctx = context;
+        
+    }
+
+    public void setContext(GoggaCompInfo ctx)
+    {
+        this.ctx = ctx;
     }
 
     public GoggaCompInfo getContext()
@@ -221,6 +226,28 @@ public class GoggaLogger2 : BasicLogger
         this.gogTrans.setMode(mode);
     }
 
+    private void doLog(TextType...)(TextType segments, GoggaCompInfo info, Level level)
+    {
+        /* Create a new GoggaMessage */
+        GoggaMessage message = new GoggaMessage();
+
+        /* Set context to the line information */
+        message.setContext(info);
+
+        /* Set the level */
+        message.setLevel(level);
+
+        /** 
+         * Grab all compile-time arguments and make them
+         * into an array, then join them together and
+         * set that text as the message's text
+         */
+        message.setText(join(flatten(segments), " "));
+
+        /* Log this message */
+		log(message);
+    }
+
     /** 
 	 * Logs using the default context an arbitrary amount of arguments
 	 * specifically setting the context's level to ERROR
@@ -240,25 +267,7 @@ public class GoggaLogger2 : BasicLogger
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
 	{
-		/* Build up the line information */
-		GoggaCompInfo compilationInfo = GoggaCompInfo(c1, c2, c3, c4, c5, c6);
-
-
-        GoggaMessage message = new GoggaMessage(compilationInfo);
-
-        message.setLevel(Level.ERROR);
-
-		/**
-		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
-		 */		
-		string[] components = flatten(segments);
-
-		/* Join all `components` into a single string */
-		string messageOut = join(components, " ");
-
-        message.setText(messageOut);
-
-		log(message);
+		doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.ERROR);
 	}
 
 	/** 
@@ -280,25 +289,7 @@ public class GoggaLogger2 : BasicLogger
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
 	{
-		/* Build up the line information */
-		GoggaCompInfo compilationInfo = GoggaCompInfo(c1, c2, c3, c4, c5, c6);
-
-
-        GoggaMessage message = new GoggaMessage(compilationInfo);
-
-        message.setLevel(Level.INFO);
-
-		/**
-		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
-		 */		
-		string[] components = flatten(segments);
-
-		/* Join all `components` into a single string */
-		string messageOut = join(components, " ");
-
-        message.setText(messageOut);
-
-		log(message);
+		doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.INFO);
 	}
 
 	/** 
@@ -320,25 +311,7 @@ public class GoggaLogger2 : BasicLogger
 									string c4 = __MODULE__, string c5 = __FUNCTION__,
 									string c6 = __PRETTY_FUNCTION__)
 	{
-		/* Build up the line information */
-		GoggaCompInfo compilationInfo = GoggaCompInfo(c1, c2, c3, c4, c5, c6);
-
-
-        GoggaMessage message = new GoggaMessage(compilationInfo);
-
-        message.setLevel(Level.WARNING);
-
-		/**
-		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
-		 */		
-		string[] components = flatten(segments);
-
-		/* Join all `components` into a single string */
-		string messageOut = join(components, " ");
-
-        message.setText(messageOut);
-
-		log(message);
+        doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.WARNING);
 	}
 
 	/** 
@@ -364,25 +337,7 @@ public class GoggaLogger2 : BasicLogger
 		/* Only debug if debugging is enabled */
 		if(debugEnabled)
 		{
-			/* Build up the line information */
-            GoggaCompInfo compilationInfo = GoggaCompInfo(c1, c2, c3, c4, c5, c6);
-
-
-            GoggaMessage message = new GoggaMessage(compilationInfo);
-
-            message.setLevel(Level.DEBUG);
-
-            /**
-            * Grab at compile-time all arguments and generate runtime code to add them to `components`
-            */		
-            string[] components = flatten(segments);
-
-            /* Join all `components` into a single string */
-            string messageOut = join(components, " ");
-
-            message.setText(messageOut);
-
-            log(message);
+			doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.DEBUG);
 		}
 	}
 
