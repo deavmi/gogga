@@ -1,10 +1,13 @@
+/** 
+ * Core routines and types
+ *
+ * Authors: Tristan Brice Velloza Kildaire (deavmi)
+ */
 module gogga.core;
 
 import dlog.core;
 import dlog.basic;
-
 import std.conv : to;
-
 import dlog.utilities : flatten;
 import std.array : join;
 
@@ -102,26 +105,44 @@ private struct GoggaCompInfo
     }
 }
 
+/** 
+ * A `GoggaMessage` which comprises
+ * of a `GoggaCompInfo` for context
+ */
 private class GoggaMessage : BasicMessage
 {
+    /** 
+     * The line information
+     */
     private GoggaCompInfo ctx;
 
-    this()
-    {
-        
-    }
-
+    /** 
+     * Sets the context
+     *
+     * Params:
+     *   ctx = the context
+     */
     public void setContext(GoggaCompInfo ctx)
     {
         this.ctx = ctx;
     }
 
+    /** 
+     * Returns the context
+     *
+     * Returns: the context
+     */
     public GoggaCompInfo getContext()
     {
         return this.ctx;
     }
 }
 
+/** 
+ * The Gogga transformer which
+ * applies stylization to
+ * incoming `GoggaMessage`(s)
+ */
 private class GoggaTransform : Transform
 {
     /** 
@@ -223,8 +244,14 @@ private class GoggaTransform : Transform
     }
 }
 
+/** 
+ * A `GoggaLogger`
+ */
 public final class GoggaLogger : BasicLogger
 {
+    /** 
+     * The Gogga text transformer
+     */
     private GoggaTransform gogTrans;
 
     /** 
@@ -232,6 +259,9 @@ public final class GoggaLogger : BasicLogger
 	 */
     private bool debugEnabled = false;
 
+    /** 
+     * Constructs a new `GoggaLogger`
+     */
     this()
     {
         super();

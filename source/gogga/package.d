@@ -1,17 +1,14 @@
 /**
  * Gogga logging facilities
  */
+/**
+ * The Gogga logging library
+ *
+ * Authors: Tristan Brice Velloza Kildaire (deavmi)
+ */
 module gogga;
 
-/** 
- * The logging class which provides the logging print
- * calls, controlling of style and whether to debug or
- * not
+/**
+ * Core routines and types
  */
-// public import gogga.core : GoggaLogger;
-
-// /** 
-//  * The gogga styles supported
-//  */
-// public import gogga.transform 
 public import gogga.core;
