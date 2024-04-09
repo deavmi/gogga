@@ -1,361 +1,560 @@
-/** 
- * Logging facilities
- */
 module gogga.core;
 
-import dlog;
+import dlog.nu.core;
+import dlog.nu.basic;
+
+import std.conv : to;
+
 import dlog.utilities : flatten;
 import std.array : join;
 
-// import gogga.transform;
-// import gogga.context;
+/** 
+ * The gogga styles supported
+ */
+public enum GoggaMode
+{
+    /** 
+     * TwoKTwenty3 is: `[<file>] (<module>:<lineNumber>) <message>`
+     */
+    TwoKTwenty3,
+
+    /** 
+     * Simple mode is just: `[<LEVEL>] <message>`
+     */
+    SIMPLE,
+
+    /** 
+     * Rustacean mode is: `[<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>`
+     */
+    RUSTACEAN,
+
+    /** 
+     * Simple rustacean mode is: `[<LEVEL>] (<functionName>:<lineNumber>) <message>`
+     */
+    RUSTACEAN_SIMPLE
+}
+
+/**
+ * Information obtained during compilation time (if any)
+ */
+private struct GoggaCompInfo
+{
+    /**
+     * compile time usage file
+     */
+    public string fullFilePath;
+
+    /** 
+     * compile time usage file (relative)
+     */
+    public string file;
+
+    /** 
+     * compile time usage line number
+     */
+    public ulong line;
+
+    /** 
+     * compile time usage module
+     */
+    public string moduleName;
+
+    /** 
+     * compile time usage function
+     */
+    public string functionName;
+
+    /**
+     * compile time usage function (pretty)
+     */
+    public string prettyFunctionName;
+
+    /** 
+     * Constructs the compilation information with the provided
+     * parameters
+     *
+     * Params:
+     *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+     */
+    this(string fullFilePath, string file, ulong line, string moduleName, string functionName, string prettyFunctionName)
+    {
+        this.fullFilePath = fullFilePath;
+        this.file = file;
+        this.line = line;
+        this.moduleName = moduleName;
+        this.functionName = functionName;
+        this.prettyFunctionName = prettyFunctionName;
+    }
+
+    /** 
+     * Flattens the known compile-time information into a string array
+     *
+     * Returns: a string[]
+     */
+    public string[] toArray()
+    {
+        return [fullFilePath, file, to!(string)(line), moduleName, functionName, prettyFunctionName];
+    }
+}
+
+private class GoggaMessage : BasicMessage
+{
+    private GoggaCompInfo ctx;
+
+    this()
+    {
+        
+    }
+
+    public void setContext(GoggaCompInfo ctx)
+    {
+        this.ctx = ctx;
+    }
+
+    public GoggaCompInfo getContext()
+    {
+        return this.ctx;
+    }
+}
+
+private class GoggaTransform : Transform
+{
+    private GoggaMode mode;
+    this()
+    {
+        // this.mode = mode;
+    }
+
+    public void setMode(GoggaMode mode)
+    {
+        this.mode = mode;
+    }
+
+    public Message transform(Message message)
+    {
+        // Only handle GoggaMessage(s)
+        GoggaMessage goggaMesg = cast(GoggaMessage)message;
+        if(goggaMesg is null)
+        {
+            return null;
+        }
+
+        /* The generated output string */
+        string finalOutput;
 
 
 
+        /* Extract the Level */
+        Level level = goggaMesg.getLevel();
 
-// /** 
-//  * The logging class which provides the logging print
-//  * calls, controlling of style and whether to debug or
-//  * not
-//  */
-// public class GoggaLogger : Logger
-// {
-// 	/** 
-// 	 * The custom transformer
-// 	 */
-//     private GoggaTransform gTransform = new GoggaTransform();
+        /* Extract the text */
+        string text = goggaMesg.getText();
 
-	// /** 
-	//  * Whether debug prints are enabled or not
-	//  */
-    // private bool debugEnabled = false;
+        /* get the context data */
+        string[] context = goggaMesg.getContext().toArray();
 
-// 	/** 
-// 	 * Constructs a new GoggaLOgger
-// 	 */
-//     this()
-//     {
-//         super(gTransform);
-//     }
-    
-// 	/** 
-// 	 * Our underlying logging implementation
-// 	 *
-// 	 * Params:
-// 	 *   text = the text to write
-// 	 */
-//     public override void logImpl(string text)
-//     {
-//         import std.stdio : write;
-//         write(text);
-//     }
 
-// 	/** 
-// 	 * Set the style of print outs
-// 	 *
-// 	 * Params:
-// 	 *   mode = the GoggaMode wanted
-// 	 */
-// 	public void mode(GoggaMode mode)
-// 	{
-// 		gTransform.setMode(mode);
-// 	}
+        /** 
+         * Simple mode is just: `[<LEVEL>] <message>`
+         */
+        if(this.mode == GoggaMode.SIMPLE)
+        {
+            finalOutput = cast(string)debugColor("["~to!(string)(level)~"] ", level);
 
-//     /** 
-// 	 * Logs using the default context an arbitrary amount of arguments
-// 	 * specifically setting the context's level to ERROR
-// 	 *
-// 	 * Params:
-// 	 *   segments = the arbitrary argumnets (alias sequence)
-// 	 *   __FILE_FULL_PATH__ = compile time usage file
-// 	 *   __FILE__ = compile time usage file (relative)
-// 	 *   __LINE__ = compile time usage line number
-// 	 *   __MODULE__ = compile time usage module
-// 	 *   __FUNCTION__ = compile time usage function
-// 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
-// 	 */
-// 	public void error(TextType...)(TextType segments,
-// 									string c1 = __FILE_FULL_PATH__,
-// 									string c2 = __FILE__, ulong c3 = __LINE__,
-// 									string c4 = __MODULE__, string c5 = __FUNCTION__,
-// 									string c6 = __PRETTY_FUNCTION__)
-// 	{
-// 		/* Build up the line information */
-// 		GoggaCompInfo compilationInfo = GoggaCompInfo(c1, c2, c3, c4, c5, c6);
+            finalOutput ~= text~"\n";
+        }
+        /** 
+         * TwoKTwenty3 is: `[<file>] (<module>:<lineNumber>) <message>`
+         */
+        else if(this.mode == GoggaMode.TwoKTwenty3)
+        {
+            /* Module information (and status debugColoring) */
+            string moduleInfo = cast(string)debugColor("["~context[1]~"]", level);
+            
+            /* Function and line number info */
+            string funcInfo = cast(string)(colorSrc("("~context[4]~":"~context[2]~")"));
 
-// 		/**
-// 		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
-// 		 */		
-// 		string[] components = flatten(segments);
+            finalOutput =  moduleInfo~" "~funcInfo~" "~text~"\n";
+        }
+        /** 
+         * Rustacean mode is: `[<LEVEL>] (<filePath>/<functionName>:<lineNumber>) <message>`
+         */
+        else if(this.mode == GoggaMode.RUSTACEAN)
+        {
+            finalOutput = cast(string)debugColor(to!(string)(level)~"\t", level);
+            finalOutput ~= cast(string)(colorSrc(context[1]~"/"~context[4]~":"~context[2]~"  "));
+            finalOutput ~= text~"\n";
+        }
+        /** 
+         * Simple rustacean mode is: `[<LEVEL>] (<functionName>:<lineNumber>) <message>`
+         */
+        else if(this.mode == GoggaMode.RUSTACEAN_SIMPLE)
+        {
+            finalOutput = cast(string)debugColor(to!(string)(level)~"\t", level);
+            finalOutput ~= cast(string)(colorSrc(context[4]~":"~context[2]~"  "));
+            finalOutput ~= text~"\n";
+        }
 
-// 		/* Join all `components` into a single string */
-// 		string messageOut = join(components, " ");
+        goggaMesg.setText(finalOutput);
+        return message;
+    }
+}
 
-// 		/* Call the log */
-// 		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
-// 	}
+public final class GoggaLogger : BasicLogger
+{
+    private GoggaTransform gogTrans;
 
-// 	/** 
-// 	 * Logs using the default context an arbitrary amount of arguments
-// 	 * specifically setting the context's level to INFO
-// 	 *
-// 	 * Params:
-// 	 *   segments = the arbitrary argumnets (alias sequence)
-// 	 *   __FILE_FULL_PATH__ = compile time usage file
-// 	 *   __FILE__ = compile time usage file (relative)
-// 	 *   __LINE__ = compile time usage line number
-// 	 *   __MODULE__ = compile time usage module
-// 	 *   __FUNCTION__ = compile time usage function
-// 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
-// 	 */
-// 	public void info(TextType...)(TextType segments,
-// 									string c1 = __FILE_FULL_PATH__,
-// 									string c2 = __FILE__, ulong c3 = __LINE__,
-// 									string c4 = __MODULE__, string c5 = __FUNCTION__,
-// 									string c6 = __PRETTY_FUNCTION__)
-// 	{
-// 		/* Use the context `GoggaContext` */
-// 		GoggaContext defaultContext = new GoggaContext();
+    /** 
+	 * Whether debug prints are enabled or not
+	 */
+    private bool debugEnabled = false;
 
-// 		/* Build up the line information */
-// 		CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
+    this()
+    {
+        super();
+        this.gogTrans = new GoggaTransform();
+        addTransform(this.gogTrans);
+    }
 
-// 		/* Set the line information in the context */
-// 		defaultContext.setLineInfo(compilationInfo);
+    /** 
+     * Sets the style of logging
+     * to use
+     *
+     * Params:
+     *   mode = the `GoggaMode`
+     */
+    public void mode(GoggaMode mode)
+    {
+        this.gogTrans.setMode(mode);
+    }
 
-// 		/* Set the level to INFO */
-// 		defaultContext.setLevel(Level.INFO);
+    /** 
+     * Performs the actual logging
+     * by packing up everything before
+     * sending it to the `log(Message)`
+     * method
+     *
+     * Params:
+     *   segments = the compile-time segments
+     *   info = the context
+     *   level = the log level to use
+     */
+    private void doLog(TextType...)(TextType segments, GoggaCompInfo info, Level level)
+    {
+        /* Create a new GoggaMessage */
+        GoggaMessage message = new GoggaMessage();
 
-// 		/**
-// 		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
-// 		 */		
-// 		string[] components = flatten(segments);
+        /* Set context to the line information */
+        message.setContext(info);
 
-// 		/* Join all `components` into a single string */
-// 		string messageOut = join(components, multiArgJoiner);
+        /* Set the level */
+        message.setLevel(level);
 
-// 		/* Call the log */
-// 		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
-// 	}
+        /** 
+         * Grab all compile-time arguments and make them
+         * into an array, then join them together and
+         * set that text as the message's text
+         */
+        message.setText(join(flatten(segments), " "));
 
-// 	/** 
-// 	 * Logs using the default context an arbitrary amount of arguments
-// 	 * specifically setting the context's level to WARN
-// 	 *
-// 	 * Params:
-// 	 *   segments = the arbitrary argumnets (alias sequence)
-// 	 *   __FILE_FULL_PATH__ = compile time usage file
-// 	 *   __FILE__ = compile time usage file (relative)
-// 	 *   __LINE__ = compile time usage line number
-// 	 *   __MODULE__ = compile time usage module
-// 	 *   __FUNCTION__ = compile time usage function
-// 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
-// 	 */
-// 	public void warn(TextType...)(TextType segments,
-// 									string c1 = __FILE_FULL_PATH__,
-// 									string c2 = __FILE__, ulong c3 = __LINE__,
-// 									string c4 = __MODULE__, string c5 = __FUNCTION__,
-// 									string c6 = __PRETTY_FUNCTION__)
-// 	{
-// 		/* Use the context `GoggaContext` */
-// 		GoggaContext defaultContext = new GoggaContext();
+        /* Log this message */
+		log(message);
+    }
 
-// 		/* Build up the line information */
-// 		CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
+    /** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to ERROR
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public void error(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__)
+	{
+		doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.ERROR);
+	}
 
-// 		/* Set the line information in the context */
-// 		defaultContext.setLineInfo(compilationInfo);
+	/** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to INFO
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public void info(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__)
+	{
+		doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.INFO);
+	}
 
-// 		/* Set the level to WARN */
-// 		defaultContext.setLevel(Level.WARN);
+	/** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to WARN
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public void warn(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__)
+	{
+        doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.WARNING);
+	}
 
-// 		/**
-// 		 * Grab at compile-time all arguments and generate runtime code to add them to `components`
-// 		 */		
-// 		string[] components = flatten(segments);
+	/** 
+	 * Logs using the default context an arbitrary amount of arguments
+	 * specifically setting the context's level to DEBUG and will
+	 * only print if debugging is enabled
+	 *
+	 * Params:
+	 *   segments = the arbitrary argumnets (alias sequence)
+	 *   __FILE_FULL_PATH__ = compile time usage file
+	 *   __FILE__ = compile time usage file (relative)
+	 *   __LINE__ = compile time usage line number
+	 *   __MODULE__ = compile time usage module
+	 *   __FUNCTION__ = compile time usage function
+	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
+	 */
+	public void debug_(TextType...)(TextType segments,
+									string c1 = __FILE_FULL_PATH__,
+									string c2 = __FILE__, ulong c3 = __LINE__,
+									string c4 = __MODULE__, string c5 = __FUNCTION__,
+									string c6 = __PRETTY_FUNCTION__)
+	{		
+        doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.DEBUG);
+	}
 
-// 		/* Join all `components` into a single string */
-// 		string messageOut = join(components, multiArgJoiner);
+    /** 
+	 * Alias for debug_
+	 */
+	public alias dbg = debug_;
+}
 
-// 		/* Call the log */
-// 		logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
-// 	}
+/** 
+ * Colorise the text provided accoridng to the level and then
+ * reset the colors at the end
+ *
+ * Params:
+ *   text = the text to colorise
+ *   level = the color to use
+ * Returns: the byte sequence of characters and controls
+ */
+private byte[] debugColor(string text, Level level)
+{
+    /* The generated message */
+    byte[] messageBytes;
 
-// 	/** 
-// 	 * Logs using the default context an arbitrary amount of arguments
-// 	 * specifically setting the context's level to DEBUG and will
-// 	 * only print if debugging is enabled
-// 	 *
-// 	 * Params:
-// 	 *   segments = the arbitrary argumnets (alias sequence)
-// 	 *   __FILE_FULL_PATH__ = compile time usage file
-// 	 *   __FILE__ = compile time usage file (relative)
-// 	 *   __LINE__ = compile time usage line number
-// 	 *   __MODULE__ = compile time usage module
-// 	 *   __FUNCTION__ = compile time usage function
-// 	 *   __PRETTY_FUNCTION__ = compile time usage function (pretty)
-// 	 */
-// 	public void debug_(TextType...)(TextType segments,
-// 									string c1 = __FILE_FULL_PATH__,
-// 									string c2 = __FILE__, ulong c3 = __LINE__,
-// 									string c4 = __MODULE__, string c5 = __FUNCTION__,
-// 									string c6 = __PRETTY_FUNCTION__)
-// 	{
-// 		/* Only debug if debugging is enabled */
-// 		if(debugEnabled)
-// 		{
-// 			/* Use the context `GoggaContext` */
-// 			GoggaContext defaultContext = new GoggaContext();
+    /* If INFO, set green */
+    if(level == Level.INFO)
+    {
+        messageBytes = cast(byte[])[27, '[','3','2','m'];
+    }
+    /* If WARN, set yellow */
+    else if(level == Level.WARNING)
+    {
+        messageBytes = cast(byte[])[27, '[','3','1', ';', '9', '3', 'm'];
+    }
+    /* If ERROR, set red */
+    else if(level == Level.ERROR)
+    {
+        messageBytes = cast(byte[])[27, '[','3','1','m'];
+    }
+    /* If DEBUG, set pink */
+    else
+    {
+        messageBytes = cast(byte[])[27, '[','3','5','m'];
+    }
 
-// 			/* Build up the line information */
-// 			CompilationInfo compilationInfo = CompilationInfo(c1, c2, c3, c4, c5, c6);
+    /* Add the message */
+    messageBytes ~= cast(byte[])text;
 
-// 			/* Set the line information in the context */
-// 			defaultContext.setLineInfo(compilationInfo);
+    /* Switch back debugColor */
+    messageBytes ~= cast(byte[])[27, '[', '3', '9', 'm'];
 
-// 			/* Set the level to DEBUG */
-// 			defaultContext.setLevel(Level.DEBUG);
+    /* Reset coloring */
+    messageBytes ~= [27, '[', 'm'];
 
-// 			/**
-// 			* Grab at compile-time all arguments and generate runtime code to add them to `components`
-// 			*/		
-// 			string[] components = flatten(segments);
+    return messageBytes;
+}
 
-// 			/* Join all `components` into a single string */
-// 			string messageOut = join(components, multiArgJoiner);
+/** 
+ * Colors the provided text in a gray fashion and then
+ * resets back to normal
+ *
+ * Params:
+ *   text = the text to gray color
+ * Returns: the byte sequence of characters and controls
+ */
+private byte[] colorSrc(string text)
+{
+    /* The generated message */
+    byte[] messageBytes;
 
-// 			/* Call the log */
-// 			logc(defaultContext, messageOut, c1, c2, c3, c4, c5, c6);
-// 		}
-// 	}
+    /* Reset coloring */
+    messageBytes ~= [27, '[', 'm'];
 
-	// /** 
-	//  * Alias for debug_
-	//  */
-	// public alias dbg = debug_;
+    /* Color gray */
+    messageBytes ~= [27, '[', '3', '9', ';', '2', 'm'];
 
-	// /** 
-	//  * Enables debug prints
-	//  */
-    // public void enableDebug()
-    // {
-    //     this.debugEnabled = true;
-	// }
+    /* Append the message */
+    messageBytes ~= text;
 
-	// /** 
-	//  * Disables debug prints
-	//  */
-    // public void disableDebug()
-    // {
-    //     this.debugEnabled = false;
-    // }
-// }
+    /* Reset coloring */
+    messageBytes ~= [27, '[', 'm'];
 
-// version(unittest)
-// {
-// 	import std.stdio : writeln;
-// }
+    return messageBytes;
+}
 
-// unittest
-// {
-//     GoggaLogger gLogger = new GoggaLogger();
+version(unittest)
+{
+	import std.stdio : writeln, stdout;
+}
 
-// 	// Test the normal modes
-//     gLogger.info("This is an info message");
-//     gLogger.warn("This is a warning message");
-//     gLogger.error("This is an error message");
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+    gLogger.addHandler(new FileHandler(stdout));
+    gLogger.setLevel(Level.INFO);
 
-// 	// We shouldn't see anything as debug is off
-// 	gLogger.dbg("This is a debug which is hidden", 1);
+	// Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
 
-// 	// Now enable debugging and you should see it
-// 	gLogger.enableDebug();
-// 	gLogger.dbg("This is a VISIBLE debug", true);
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
 
-//     // Make space between unit tests
-// 	writeln();
-// }
+	// Now enable debugging and you should see it
+	gLogger.setLevel(Level.DEBUG);
+	gLogger.dbg("This is a VISIBLE debug", true);
 
-// unittest
-// {
-//     GoggaLogger gLogger = new GoggaLogger();
-// 	gLogger.mode(GoggaMode.TwoKTwenty3);
+    // Make space between unit tests
+	writeln();
+}
 
-//     // Test the normal modes
-//     gLogger.info("This is an info message");
-//     gLogger.warn("This is a warning message");
-//     gLogger.error("This is an error message");
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+    gLogger.addHandler(new FileHandler(stdout));
+    gLogger.setLevel(Level.INFO);
 
-// 	// We shouldn't see anything as debug is off
-// 	gLogger.dbg("This is a debug which is hidden", 1);
+	gLogger.mode(GoggaMode.TwoKTwenty3);
 
-// 	// Now enable debugging and you should see it
-// 	gLogger.enableDebug();
-// 	gLogger.dbg("This is a VISIBLE debug", true);
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
 
-//     // Make space between unit tests
-// 	writeln();
-// }
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
 
-// unittest
-// {
-//     GoggaLogger gLogger = new GoggaLogger();
-// 	gLogger.mode(GoggaMode.SIMPLE);
+	// Now enable debugging and you should see it
+    gLogger.setLevel(Level.DEBUG);
+	gLogger.dbg("This is a VISIBLE debug", true);
 
-//     // Test the normal modes
-//     gLogger.info("This is an info message");
-//     gLogger.warn("This is a warning message");
-//     gLogger.error("This is an error message");
+    // Make space between unit tests
+	writeln();
+}
 
-// 	// We shouldn't see anything as debug is off
-// 	gLogger.dbg("This is a debug which is hidden", 1);
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+    gLogger.addHandler(new FileHandler(stdout));
+    gLogger.setLevel(Level.INFO);
 
-// 	// Now enable debugging and you should see it
-// 	gLogger.enableDebug();
-// 	gLogger.dbg("This is a VISIBLE debug", true);
+	gLogger.mode(GoggaMode.SIMPLE);
 
-//     // Make space between unit tests
-// 	writeln();
-// }
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
 
-// unittest
-// {
-//     GoggaLogger gLogger = new GoggaLogger();
-// 	gLogger.mode(GoggaMode.RUSTACEAN);
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
 
-//     // Test the normal modes
-//     gLogger.info("This is an info message");
-//     gLogger.warn("This is a warning message");
-//     gLogger.error("This is an error message");
+	// Now enable debugging and you should see it
+    gLogger.setLevel(Level.DEBUG);
+	gLogger.dbg("This is a VISIBLE debug", true);
 
-// 	// We shouldn't see anything as debug is off
-// 	gLogger.dbg("This is a debug which is hidden", 1);
+    // Make space between unit tests
+	writeln();
+}
 
-// 	// Now enable debugging and you should see it
-// 	gLogger.enableDebug();
-// 	gLogger.dbg("This is a VISIBLE debug", true);
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+    gLogger.addHandler(new FileHandler(stdout));
+    gLogger.setLevel(Level.INFO);
 
-//     // Make space between unit tests
-// 	writeln();
-// }
+	gLogger.mode(GoggaMode.RUSTACEAN);
 
-// unittest
-// {
-//     GoggaLogger gLogger = new GoggaLogger();
-// 	gLogger.mode(GoggaMode.RUSTACEAN_SIMPLE);
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
 
-//     // Test the normal modes
-//     gLogger.info("This is an info message");
-//     gLogger.warn("This is a warning message");
-//     gLogger.error("This is an error message");
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
 
-// 	// We shouldn't see anything as debug is off
-// 	gLogger.dbg("This is a debug which is hidden", 1);
+	// Now enable debugging and you should see it
+    gLogger.setLevel(Level.DEBUG);
+	gLogger.dbg("This is a VISIBLE debug", true);
 
-// 	// Now enable debugging and you should see it
-// 	gLogger.enableDebug();
-// 	gLogger.dbg("This is a VISIBLE debug", true);
+    // Make space between unit tests
+	writeln();
+}
 
-//     // Make space between unit tests
-// 	writeln();
-// }
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+    gLogger.addHandler(new FileHandler(stdout));
+    gLogger.setLevel(Level.INFO);
+
+	gLogger.mode(GoggaMode.RUSTACEAN_SIMPLE);
+
+    // Test the normal modes
+    gLogger.info("This is an info message");
+    gLogger.warn("This is a warning message");
+    gLogger.error("This is an error message");
+
+	// We shouldn't see anything as debug is off
+	gLogger.dbg("This is a debug which is hidden", 1);
+
+	// Now enable debugging and you should see it
+    gLogger.setLevel(Level.DEBUG);
+	gLogger.dbg("This is a VISIBLE debug", true);
+
+    // Make space between unit tests
+	writeln();
+}

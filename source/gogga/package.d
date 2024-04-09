@@ -13,4 +13,5 @@ module gogga;
 // /** 
 //  * The gogga styles supported
 //  */
-// public import gogga.transform : GoggaMode;
+// public import gogga.transform 
+public import gogga.core;
