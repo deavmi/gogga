@@ -124,17 +124,35 @@ private class GoggaMessage : BasicMessage
 
 private class GoggaTransform : Transform
 {
+    /** 
+     * Mode to use for stylization
+     */
     private GoggaMode mode;
-    this()
-    {
-        // this.mode = mode;
-    }
 
+    /** 
+     * Sets the stylization to
+     * use when transforming
+     * the message's text
+     *
+     * Params:
+     *   mode = the `GoggaMode`
+     */
     public void setMode(GoggaMode mode)
     {
         this.mode = mode;
     }
 
+    /** 
+     * Transforms the incoming message
+     * to use the Gogga stylization. This
+     * will be a no-op if the incoming
+     * message is not a `GoggaMessage`.
+     *
+     * Params:
+     *   message = the message to transform
+     * Returns: the transformed message,
+     * else the same exact one
+     */
     public Message transform(Message message)
     {
         // Only handle GoggaMessage(s)
@@ -254,6 +272,10 @@ public final class GoggaLogger : BasicLogger
 
         /* Set the level */
         message.setLevel(level);
+
+        // TODO: Add a feature (compile time check)
+        // that if segments is first string then everything else
+        // iets anders, then apply formatting
 
         /** 
          * Grab all compile-time arguments and make them
