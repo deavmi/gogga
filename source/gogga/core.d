@@ -273,16 +273,41 @@ public final class GoggaLogger : BasicLogger
         /* Set the level */
         message.setLevel(level);
 
+
+        /* Flattened compile-time arguments */
+        string[] flattened;
+
         // TODO: Add a feature (compile time check)
         // that if segments is first string then everything else
         // iets anders, then apply formatting
+        static if(segments.length > 1)
+        {
+            
+            static if(__traits(isSame, typeof(segments[0]), string))
+            {
+                string fmtString = segments[0];
+
+                // What about info("Hello", 2)
+                // well we could try ands scan
+                // and see if it is a format string?
+                import std.string : format;
+                string formatted = format(fmtString, segments[1..$]);
+
+                flattened = [formatted];
+            }
+        }
+        else
+        {
+            flattened = flatten(segments);
+        }
+        
 
         /** 
          * Grab all compile-time arguments and make them
          * into an array, then join them together and
          * set that text as the message's text
          */
-        message.setText(join(flatten(segments), " "));
+        message.setText(join(flattened, " "));
 
         /* Log this message */
 		log(message);
@@ -475,7 +500,7 @@ unittest
     gLogger.error("This is an error message");
 
 	// We shouldn't see anything as debug is off
-	gLogger.dbg("This is a debug which is hidden", 1);
+	gLogger.dbg("This is a debug which is hidden %d", 1);
 
 	// Now enable debugging and you should see it
 	gLogger.setLevel(Level.DEBUG);
