@@ -258,35 +258,33 @@ public mixin template Lekker(alias gLogger)
 if(__traits(isSame, typeof(gLogger), GoggaLogger))
 {
     import std.meta : AliasSeq, aliasSeqOf;
-import std.traits : ParameterDefaults;
-import std.traits : EnumMembers;
-import dlog.basic : Level;
+    import std.traits : ParameterDefaults;
+    import std.traits : EnumMembers;
+    import dlog.basic : Level;
 
     private GoggaLogger sdfjkfsdghjsdfghjsdf = gLogger;
 
 
     private mixin template MakeFuncFor(alias GoggaLogger gLogger, Level level)
-{
-    import std.string : toLower;
-    import std.array : join;
-    import std.conv : to;
-    import gogga.core : GoggaCompInfo;
-    mixin(`
-    public void `~to!(string)(level)~`(Text...)
-    (
-        Text segments,
-        string c1 = __FILE_FULL_PATH__,
-        string c2 = __FILE__,
-        ulong c3 = __LINE__,
-        string c4 = __MODULE__,
-        string c5 = __FUNCTION__,
-        string c6 = __PRETTY_FUNCTION__
-    )
     {
-        gLogger.doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.`~to!(string)(level)~`);
+        import std.conv : to;
+        import gogga.core : GoggaCompInfo;
+        mixin(`
+        public void `~to!(string)(level)~`(Text...)
+        (
+            Text segments,
+            string c1 = __FILE_FULL_PATH__,
+            string c2 = __FILE__,
+            ulong c3 = __LINE__,
+            string c4 = __MODULE__,
+            string c5 = __FUNCTION__,
+            string c6 = __PRETTY_FUNCTION__
+        )
+        {
+            gLogger.doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.`~to!(string)(level)~`);
+        }
+        `);
     }
-    `);
-}
 
     static foreach(level; EnumMembers!(Level))
     {
