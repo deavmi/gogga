@@ -321,7 +321,6 @@ unittest
     writeln();
 }
 
-
 /** 
  * A `GoggaLogger`
  */
