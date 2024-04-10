@@ -253,7 +253,7 @@ private class GoggaTransform : Transform
  * Params:
  *   gLogger = the `GoggaLogger` identifier
  */
-public mixin template Lekker(alias gLogger)
+public mixin template LoggingFuncs(alias gLogger)
 if(__traits(isSame, typeof(gLogger), GoggaLogger))
 {
     import std.meta : AliasSeq, aliasSeqOf;
@@ -301,13 +301,17 @@ if(__traits(isSame, typeof(gLogger), GoggaLogger))
     }    
 }
 
+/** 
+ * Tests using the mixin for method
+ * names
+ */
 unittest
 {
     GoggaLogger gLogger = new GoggaLogger();
     gLogger.addHandler(new FileHandler(stdout));
     gLogger.setLevel(Level.DEBUG);
 
-    mixin Lekker!(gLogger);
+    mixin LoggingFuncs!(gLogger);
 
     DEBUG("fok", 2,2);
     ERROR("fok", 2,2);
