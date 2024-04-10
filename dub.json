@@ -5,7 +5,7 @@
 	],
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
-		"dlog": ">=0.3.19+commit.10.g6e48960"
+		"dlog": ">=0.4.0"
 	},
 	"description": "Simple VT100 colourised pretty-printing logger",
 	"license": "LGPL 3.0",
