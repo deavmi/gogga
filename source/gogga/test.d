@@ -8,6 +8,7 @@ module gogga.test;
 version(unittest)
 {
     import gogga;
+    import gogga.extras;
     import std.stdio : writeln, stdout;
     import dlog.basic : Level, FileHandler;
 }
