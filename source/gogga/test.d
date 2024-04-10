@@ -12,7 +12,7 @@ version(unittest)
     import dlog.basic : Level, FileHandler;
 }
 
-unittest
+private unittest
 {
     GoggaLogger gLogger = new GoggaLogger();
     gLogger.addHandler(new FileHandler(stdout));
