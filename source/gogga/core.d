@@ -244,17 +244,16 @@ private class GoggaTransform : Transform
     }
 }
 
-// public alias LineInfo = `d`;
 
-
-
-
-
-
-
-
+/** 
+ * Mixes in a set of easy helper methods
+ * for each log-level in `Level`, with
+ * matching nams
+ *
+ * Params:
+ *   gLogger = the `GoggaLogger` identifier
+ */
 public mixin template Lekker(alias gLogger)
-// TODO: ensure the paraneter is a var of type glogger
 if(__traits(isSame, typeof(gLogger), GoggaLogger))
 {
     import std.meta : AliasSeq, aliasSeqOf;
@@ -262,9 +261,18 @@ if(__traits(isSame, typeof(gLogger), GoggaLogger))
     import std.traits : EnumMembers;
     import dlog.basic : Level;
 
-    private GoggaLogger sdfjkfsdghjsdfghjsdf = gLogger;
-
-
+    /** 
+     * Generatesd a function named after
+     * the given log level and using
+     * the log level provided with
+     * the correct default (call-site
+     * based) arguments containing
+     * line information
+     *
+     * Params:
+     *   gLogger = the logger identifier
+     *   level = the log level
+     */
     private mixin template MakeFuncFor(alias GoggaLogger gLogger, Level level)
     {
         import std.conv : to;
@@ -286,11 +294,11 @@ if(__traits(isSame, typeof(gLogger), GoggaLogger))
         `);
     }
 
+    // Generate methods per each log level
     static foreach(level; EnumMembers!(Level))
     {
         mixin MakeFuncFor!(gLogger, level);
-    }
-    
+    }    
 }
 
 unittest
