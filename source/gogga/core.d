@@ -40,7 +40,7 @@ public enum GoggaMode
 /**
  * Information obtained during compilation time (if any)
  */
-private struct GoggaCompInfo
+public struct GoggaCompInfo
 {
     /**
      * compile time usage file
@@ -248,15 +248,29 @@ private class GoggaTransform : Transform
 
 
 
-import std.meta : AliasSeq, aliasSeqOf;
+
+
+
+
+
+public mixin template Lekker(alias gLogger)
+// TODO: ensure the paraneter is a var of type glogger
+if(__traits(isSame, typeof(gLogger), GoggaLogger))
+{
+    import std.meta : AliasSeq, aliasSeqOf;
 import std.traits : ParameterDefaults;
 import std.traits : EnumMembers;
+import dlog.basic : Level;
+
+    private GoggaLogger sdfjkfsdghjsdfghjsdf = gLogger;
 
 
-private mixin template MakeFuncFor(alias GoggaLogger gLogger, Level level)
+    private mixin template MakeFuncFor(alias GoggaLogger gLogger, Level level)
 {
     import std.string : toLower;
     import std.array : join;
+    import std.conv : to;
+    import gogga.core : GoggaCompInfo;
     mixin(`
     public void `~to!(string)(level)~`(Text...)
     (
@@ -273,12 +287,6 @@ private mixin template MakeFuncFor(alias GoggaLogger gLogger, Level level)
     }
     `);
 }
-
-public mixin template Lekker(alias gLogger)
-// TODO: ensure the paraneter is a var of type glogger
-if(__traits(isSame, typeof(gLogger), GoggaLogger))
-{
-    private GoggaLogger sdfjkfsdghjsdfghjsdf = gLogger;
 
     static foreach(level; EnumMembers!(Level))
     {
@@ -352,7 +360,7 @@ public final class GoggaLogger : BasicLogger
      *   info = the context
      *   level = the log level to use
      */
-    private void doLog(TextType...)(TextType segments, GoggaCompInfo info, Level level)
+    public void doLog(TextType...)(TextType segments, GoggaCompInfo info, Level level)
     {
         /* Create a new GoggaMessage */
         GoggaMessage message = new GoggaMessage();
