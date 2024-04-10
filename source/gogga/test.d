@@ -18,7 +18,7 @@ private unittest
     gLogger.addHandler(new FileHandler(stdout));
     gLogger.setLevel(Level.DEBUG);
 
-    mixin Lekker!(gLogger);
+    mixin LoggingFuncs!(gLogger);
 
     DEBUG("fok", 2,2);
     ERROR("fok", 2,2);
