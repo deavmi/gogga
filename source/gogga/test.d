@@ -1,9 +1,13 @@
+/**
+ * Out-of-module tests
+ *
+ * Authors: Tristan Brice Velloza Kildaire (deavmi)
+ */
 module gogga.test;
-
-import gogga;
 
 version(unittest)
 {
+    import gogga;
     import std.stdio : writeln, stdout;
     import dlog.basic : Level, FileHandler;
 }
