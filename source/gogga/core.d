@@ -244,6 +244,66 @@ private class GoggaTransform : Transform
     }
 }
 
+// public alias LineInfo = `d`;
+
+
+
+import std.meta : AliasSeq, aliasSeqOf;
+import std.traits : ParameterDefaults;
+import std.traits : EnumMembers;
+
+
+private mixin template MakeFuncFor(alias GoggaLogger gLogger, Level level)
+{
+    import std.string : toLower;
+    import std.array : join;
+    mixin(`
+    public void `~to!(string)(level)~`(Text...)
+    (
+        Text segments,
+        string c1 = __FILE_FULL_PATH__,
+        string c2 = __FILE__,
+        ulong c3 = __LINE__,
+        string c4 = __MODULE__,
+        string c5 = __FUNCTION__,
+        string c6 = __PRETTY_FUNCTION__
+    )
+    {
+        gLogger.doLog(segments, GoggaCompInfo(c1, c2, c3, c4, c5, c6), Level.`~to!(string)(level)~`);
+    }
+    `);
+}
+
+public mixin template Lekker(alias gLogger)
+// TODO: ensure the paraneter is a var of type glogger
+if(__traits(isSame, typeof(gLogger), GoggaLogger))
+{
+    private GoggaLogger sdfjkfsdghjsdfghjsdf = gLogger;
+
+    static foreach(level; EnumMembers!(Level))
+    {
+        mixin MakeFuncFor!(gLogger, level);
+    }
+    
+}
+
+unittest
+{
+    GoggaLogger gLogger = new GoggaLogger();
+    gLogger.addHandler(new FileHandler(stdout));
+    gLogger.setLevel(Level.DEBUG);
+
+    mixin Lekker!(gLogger);
+
+    DEBUG("fok", 2,2);
+    ERROR("fok", 2,2);
+    INFO("fok", 2,2);
+    WARN("fok", 2,2);
+
+    writeln();
+}
+
+
 /** 
  * A `GoggaLogger`
  */
