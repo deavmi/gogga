@@ -7,7 +7,7 @@
 	"dependencies": {
 		"dlog": ">=1.0.0"
 	},
-	"description": "Simple VT100 colourised pretty-printing logger",
+	"description": "Plug-and-play colorful VT100 logging for your terminal",
 	"license": "LGPL 3.0",
 	"name": "gogga",
 	"targetType": "library"
