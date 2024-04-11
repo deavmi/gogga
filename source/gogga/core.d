@@ -40,7 +40,7 @@ public enum GoggaMode
 /**
  * Information obtained during compilation time (if any)
  */
-private struct GoggaCompInfo
+public struct GoggaCompInfo
 {
     /**
      * compile time usage file
@@ -292,7 +292,7 @@ public final class GoggaLogger : BasicLogger
      *   info = the context
      *   level = the log level to use
      */
-    private void doLog(TextType...)(TextType segments, GoggaCompInfo info, Level level)
+    public void doLog(TextType...)(TextType segments, GoggaCompInfo info, Level level)
     {
         /* Create a new GoggaMessage */
         GoggaMessage message = new GoggaMessage();
