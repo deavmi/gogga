@@ -81,10 +81,10 @@ unittest
 
     mixin LoggingFuncs!(gLogger);
 
-    DEBUG("fok", 2,2);
-    ERROR("fok", 2,2);
-    INFO("fok", 2,2);
-    WARN("fok", 2,2);
+    DEBUG("This is debug", 2.3, true, [2,2]);
+    ERROR("This is error", 2.3, true, [2,2]);
+    INFO("This is info", 2.3, true, [2,2]);
+    WARN("This is warn", 2.3, true, [2,2]);
 
     writeln();
 }
