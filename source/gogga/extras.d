@@ -5,6 +5,8 @@
  */
 module gogga.extras;
 
+import gogga.core : GoggaLogger;
+
 /** 
  * Mixes in a set of easy helper methods
  * for each log-level in `Level`, with
@@ -63,7 +65,6 @@ if(__traits(isSame, typeof(gLogger), GoggaLogger))
 
 version(unittest)
 {
-    import gogga;
     import gogga.extras;
     import std.stdio : writeln, stdout;
     import dlog.basic : Level, FileHandler;
