@@ -37,7 +37,7 @@ Various [styles](https://gogga.dpldocs.info/gogga.core.GoggaMode.html) are suppo
 
 Or you can also [View the full API](https://gogga.dpldocs.info/).
 
-### Debugger functions
+### Quick-and-dirty logging functions
 
 For quick-and-dirty ease of use there is also a module called `gogga.mixins`. Once
 this module is imported it will mixin a set of variadic-argument functions for you
