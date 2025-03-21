@@ -31,9 +31,9 @@ This should output something like the following:
 
 ![](example.png)
 
-Various [styles](https://gogga.dpldocs.info/v3.0.1/gogga.core.GoggaMode.html) are supported which can be set using `mode(GoggaMode)`.
+Various [styles](https://gogga.dpldocs.info/v3.1.2/gogga.core.GoggaMode.html) are supported which can be set using `mode(GoggaMode)`.
 
 ---
 
-Or you can also [View the full API](https://gogga.dpldocs.info/v3.0.1/gogga.html).
+Or you can also [View the full API](https://gogga.dpldocs.info/v3.1.2/gogga.html).
 
