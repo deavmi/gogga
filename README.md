@@ -59,7 +59,6 @@ As for build options there are the following available for configuration:
 | `DBG_VERBOSE_LOGGING` | When enabled the `GoggaMode.RUSTACEAN` will be used |
 | `DBG_DEBUG_LOGGING`   | When enabled the logging level will be set to `Level.DEBUG` |
 
-
 The `GoggaLogger` logger instance created is shared amongst the same thread _or_
 in other words it is stored as part of thread-local storage (TLS). For more information
 browse the source code of `source/gogga/mixins.d`.
