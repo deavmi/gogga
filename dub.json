@@ -5,7 +5,7 @@
 	],
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
-		"dlog": ">=1.0.0"
+		"dlog": ">=1.0.2"
 	},
 	"description": "Plug-and-play colorful VT100 logging for your terminal",
 	"license": "LGPL 3.0",
