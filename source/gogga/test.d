@@ -28,3 +28,13 @@ private unittest
 
     writeln();
 }
+
+private unittest
+{
+    import gogga.mixins;
+
+    ERROR("This is using the quick-and-dirty mixin");
+    WARN("This is using the quick-and-dirty mixin");
+    INFO("This is using the quick-and-dirty mixin");
+    DEBUG("This is using the quick-and-dirty mixin");
+}
