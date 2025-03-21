@@ -37,3 +37,28 @@ Various [styles](https://gogga.dpldocs.info/gogga.core.GoggaMode.html) are suppo
 
 Or you can also [View the full API](https://gogga.dpldocs.info/).
 
+### Quick-and-dirty logging functions
+
+For quick-and-dirty ease of use there is also a module called `gogga.mixins`. Once
+this module is imported it will mixin a set of variadic-argument functions for you
+of the form:
+
+1. `DEBUG(...)`
+2. `INFO(...)`
+3. `WARN(...)`
+4. `ERROR(...)`
+
+These will become immediately available to you and a logger that is configured to
+write out to standard output will be configured with the styling of `GoggaMode.SIMPLE`
+and a logging level of `Level.INFO`.
+
+As for build options there are the following available for configuration:
+
+| Build option name     | Description |
+|-----------------------|-------------|
+| `DBG_VERBOSE_LOGGING` | When enabled the `GoggaMode.RUSTACEAN` will be used |
+| `DBG_DEBUG_LOGGING`   | When enabled the logging level will be set to `Level.DEBUG` |
+
+The `GoggaLogger` logger instance created is shared amongst the same thread _or_
+in other words it is stored as part of thread-local storage (TLS). For more information
+browse the source code of `source/gogga/mixins.d`.
