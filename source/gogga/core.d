@@ -311,7 +311,7 @@ public final class GoggaLogger : BasicLogger
         message.setText(join(flatten(segments), " "));
 
         /* Log this message */
-		log(message);
+				log(message);
     }
 
     /** 
@@ -431,7 +431,7 @@ private byte[] debugColor(string text, Level level)
     /* If WARN, set yellow */
     else if(level == Level.WARN)
     {
-        messageBytes = cast(byte[])[27, '[','3','1', ';', '9', '3', 'm'];
+        messageBytes = cast(byte[])[27, '[','3','3', 'm'];
     }
     /* If ERROR, set red */
     else if(level == Level.ERROR)
